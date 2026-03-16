@@ -31,6 +31,7 @@ pip install --upgrade mlx-lm python-docx
 ```
 ### 2. Tải Model:
 Link tải adapter: https://huggingface.co/dangkhoi0202/qwen2.5-3b-legal-json-adapter
+
 Lần chạy đầu tiên, công cụ sẽ tự động tải model Qwen2.5-3B-Instruct-4bit từ HuggingFace (~2.5GB).
 🚀 Hướng dẫn Sử dụng
 Mở file test_model_universal.py và cập nhật đường dẫn file tại khối main:
@@ -39,7 +40,9 @@ if __name__ == "__main__":
     # Thay tên file Word đầu vào và file JSON đầu ra tương ứng
     run_universal_extraction("VAN_BAN_PHAP_LUAT.docx", "output_data.json")
 ```
-📄 Cấu trúc JSON Đầu Ra (Output Schema)
+
+
+###📄 Cấu trúc JSON Đầu Ra (Output Schema)
 ```bash
 {
   "thuoc_tinh": {
