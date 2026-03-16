@@ -28,16 +28,19 @@ Dự án yêu cầu **Python 3.9+** và hoạt động tốt nhất trên **macO
 ### 1. Cài đặt thư viện:
 ```bash
 pip install --upgrade mlx-lm python-docx
-
-**### 2. Tải Model:**
+```
+### 2. Tải Model:
+Link tải adapter: https://huggingface.co/dangkhoi0202/qwen2.5-3b-legal-json-adapter
 Lần chạy đầu tiên, công cụ sẽ tự động tải model Qwen2.5-3B-Instruct-4bit từ HuggingFace (~2.5GB).
 🚀 Hướng dẫn Sử dụng
 Mở file test_model_universal.py và cập nhật đường dẫn file tại khối main:
+```bash
 if __name__ == "__main__":
     # Thay tên file Word đầu vào và file JSON đầu ra tương ứng
     run_universal_extraction("VAN_BAN_PHAP_LUAT.docx", "output_data.json")
-
+```
 📄 Cấu trúc JSON Đầu Ra (Output Schema)
+```bash
 {
   "thuoc_tinh": {
     "so_ky_hieu": "13/2025/TTLT-BTP-BNG-TANDTC",
@@ -65,6 +68,7 @@ if __name__ == "__main__":
     "source_url": ""
   }
 }
+```
 🐛 Gỡ lỗi (Troubleshooting)
 Lỗi hệ thống (Không tìm thấy JSON): Kiểm tra file raw_debug.txt. Thường do văn bản quá dài hoặc AI phản hồi bằng văn bản thường thay vì JSON.
 
