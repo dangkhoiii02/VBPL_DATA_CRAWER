@@ -1,53 +1,49 @@
-# 🇻🇳 VBPL Data Extractor (M1/MLX Optimized)
+🇻🇳 VBPL Data Extractor (M1/MLX Optimized)
+Công cụ trích xuất dữ liệu tự động từ các Văn bản pháp luật Việt Nam (.docx) sang định dạng JSON chuẩn hóa. Hệ thống được tối ưu hóa đặc biệt cho dòng chip Apple Silicon (M1/M2/M3), sử dụng mô hình ngôn ngữ lớn (LLM) chạy cục bộ để đảm bảo tốc độ và quyền riêng tư dữ liệu.
 
-Công cụ trích xuất dữ liệu tự động từ các Văn bản pháp luật Việt Nam (File `.docx`) sang định dạng `JSON` chuẩn hóa. Hệ thống sử dụng mô hình LLM chạy cục bộ (Local) được tối ưu hóa riêng cho chip **Apple Silicon (MacBook M1/M2/M3)** thông qua thư viện `mlx-lm`.
+🛡️ "3 Tầng Phòng Ngự" - Chống lỗi AI tuyệt đối
+VBPL Việt Nam thường có định dạng lộn xộn, gây khó khăn cho AI. Tool này được trang bị 3 lớp xử lý để đảm bảo dữ liệu đầu ra không bao giờ bị "gãy":
 
-## ✨ Tính năng nổi bật (The "Bulletproof" Features)
+1. Tiền xử lý văn bản (Universal Pre-processor)
+Dọn rác ký tự: Loại bỏ hoàn toàn các ký tự điều khiển ẩn (\xa0, \t, \r) và diệt tận gốc mọi dấu ngoặc kép (", “, ”) gây lỗi parse JSON.
 
-Các văn bản pháp luật (VBPL) thực tế thường có định dạng cực kỳ lộn xộn (ký tự ẩn, bảng biểu phức tạp, phụ lục rác...). Tool này được trang bị 3 tầng phòng ngự để đảm bảo kết quả JSON luôn chính xác 100%:
+Regex Formatting: Tự động nhận diện cấu trúc ẩn, ép các dòng "Căn cứ...", "Chương...", và các Điều khoản sửa đổi (Điều 10, Điều 17...) xuống dòng mới để AI không bỏ sót.
 
-1. **Bộ lọc "Vô Trùng" (Universal Pre-processor):**
-   - Quét sạch mọi ký tự điều khiển ẩn (`\xa0`, `\t`, `\r`) do lỗi đánh máy.
-   - Diệt tận gốc mọi dấu ngoặc kép (`"`, `“`, `”`) trong file Word gốc, ngăn chặn tuyệt đối lỗi gãy chuỗi JSON (JSON Decode Error).
-   - Dùng Regex định dạng lại cấu trúc ẩn: Tự động ép các cụm từ quan trọng như *"Căn cứ..."*, *"Chương..."*, *"Điều..."* xuống dòng mới để AI dễ dàng nhận diện, không bị bỏ sót các Điều khoản sửa đổi (VD: Điều 10, Điều 17 bị kẹp giữa đoạn văn).
-   - **Smart Crop:** Tự động tìm từ khóa `"Nơi nhận:"` để cắt bỏ hàng ngàn ký tự Phụ lục rác, giúp AI tập trung 100% (Attention) vào phần Chữ ký và Điều khoản.
+Smart Crop: Tự động cắt bỏ phần phụ lục rác sau mục "Nơi nhận:", giúp AI tập trung tối đa vào phần Chữ ký và các Điều khoản chính.
 
-2. **Kỷ Luật Thép Prompting (Strict Output Forcing):**
-   - Ép AI xuất duy nhất mã JSON, cấm giải thích hay chào hỏi.
-   - Sử dụng kỹ thuật *Mẫu Rỗng (Empty Skeleton)* để chống hiện tượng AI học vẹt (copy nguyên hướng dẫn vào kết quả).
+2. Kỷ luật thép Prompting (Strict Output Forcing)
+Skeleton Prompting: Sử dụng khung JSON rỗng làm mẫu, ép AI điền thông tin thay vì để nó tự sáng tạo cấu trúc.
 
-3. **Bác sĩ Phẫu thuật JSON (Auto-Fixer):**
-   - Tự động bắt lỗi các mô hình AI nhỏ (3B) khi chúng quên dấu phẩy `,` hoặc đóng nhầm mảng bằng dấu ngoặc nhọn `}`.
-   - Ép kiểu dữ liệu (Type Forcing) bằng Python: Tự động gộp mảng `[]` thành chuỗi `" "` đối với các trường thông tin không được phép lặp lại (Cơ quan ban hành, Người ký...).
+Constraint Logic: Quy định rõ kiểu dữ liệu (String cho thuộc tính, Array cho căn cứ) để tránh việc AI nhầm lẫn giữa các trường thông tin.
 
----
+3. Hậu xử lý & Auto-Fix (Python Surgery)
+Syntax Repair: Tự động sửa các lỗi cú pháp JSON kinh điển của các Model nhỏ (3B) như thiếu dấu phẩy , hoặc đóng nhầm ngoặc nhọn } cho mảng.
 
-## ⚙️ Cài đặt Môi trường
+Flattening Metadata: Nếu AI vô tình tạo mảng cho các trường như Người ký hay Chức danh, Python sẽ tự động gộp (flatten) chúng thành chuỗi văn bản duy nhất để đúng chuẩn database.
 
-Dự án yêu cầu Python 3.9+ và chỉ hoạt động tốt nhất trên hệ điều hành macOS (Apple Silicon).
+⚙️ Cài đặt & Môi trường
+Yêu cầu: macOS (Chip M-Series), Python 3.9+.
 
-**1. Cài đặt thư viện:**
-Mở Terminal và chạy lệnh sau:
-```bash
+Thư viện: mlx-lm, python-docx.
+
+Cài đặt nhanh:
+Bash
 pip install --upgrade mlx-lm python-docx
-2. Tải Model:
-Lần chạy đầu tiên, tool sẽ tự động kéo model Qwen2.5-3B-Instruct-4bit từ HuggingFace về máy (Nặng khoảng ~2.5GB).
+Ghi chú: Lần chạy đầu tiên sẽ tự động tải model Qwen2.5-3B-Instruct (khoảng 2.5GB) về máy.
 
 🚀 Hướng dẫn Sử dụng
-Chỉ cần thay đổi đường dẫn file Word .docx đầu vào và tên file .json đầu ra ở cuối script test_model.py:
+Mở file test_model_universal.py và cập nhật đường dẫn file ở khối main:
 
 Python
 if __name__ == "__main__":
-    # Thay tên file đầu vào và đầu ra tại đây
-    run_universal_extraction("THONG_TU_13_2025.docx", "ket_qua.json")
-Chạy script trên Terminal:
+    # Thay tên file Word đầu vào và file JSON đầu ra
+    run_universal_extraction("THONG_TU_LIEN_TICH_13.docx", "result_final.json")
+Chạy lệnh trên Terminal:
 
 Bash
-python3 test_model.py
-📄 Cấu trúc JSON Đầu Ra (Output Schema)
-Hệ thống cam kết trả về đúng một định dạng JSON duy nhất cho mọi loại VBPL (Luật, Nghị định, Thông tư, Quyết định...).
-
-Lưu ý: Mẫu dưới đây là chế độ chỉ lấy Tên Điều (Không lấy nội dung chi tiết).
+python3 test_model_universal.py
+📄 Cấu trúc JSON Chuẩn (Output Schema)
+Hệ thống trả về định dạng đồng nhất cho mọi loại văn bản (Thông tư liên tịch, Nghị định, Luật...). Ở chế độ mặc định, tool chỉ trích xuất Tên Điều để tối ưu hóa tốc độ và dung lượng.
 
 JSON
 {
@@ -66,19 +62,17 @@ JSON
   ],
   "chuong": [],
   "dieu": [
-    {
-      "ten_dieu": "Điều 1. Sửa đổi, bổ sung một số điều..."
-    },
-    {
-      "ten_dieu": "Điều 2. Điều khoản thi hành"
-    }
+    { "ten_dieu": "Điều 1" },
+    { "ten_dieu": "Điều 10. Thẩm quyền yêu cầu..." },
+    { "ten_dieu": "Điều 17. Thẩm quyền thực hiện..." },
+    { "ten_dieu": "Điều 4. Điều khoản thi hành" }
   ],
   "metadata_he_thong": {
     "ngay_crawl": "2026-03-16T20:45:12.123456",
     "source_url": ""
   }
 }
-🐛 Gỡ lỗi (Troubleshooting)
-Trong trường hợp file Word có cấu trúc quá "dị" khiến AI không thể sinh ra cú pháp JSON hợp lệ, script sẽ tự động ném ra cảnh báo ❌ Lỗi cú pháp JSON hoặc ❌ Không tìm thấy cấu trúc JSON.
+🐛 Troubleshooting
+Lỗi cú pháp JSON: Xảy ra khi văn bản quá dị biệt. Kiểm tra file raw_debug.txt để xem phản hồi thô của AI.
 
-Đừng lo lắng! Toàn bộ câu trả lời thô (nguyên văn đoạn text lỗi) của AI đã được tự động lưu vào file raw_debug.txt. Bạn chỉ cần mở file này ra, xem vị trí lỗi cú pháp ở đâu và điều chỉnh lại Regex trong hàm read_legal_docx_universal là xong.
+Thiếu thông tin người ký: Kiểm tra xem file Word có phần "Nơi nhận:" không. Nếu không có, hãy tăng giới hạn cắt chuỗi trong hàm read_legal_docx_universal.
