@@ -163,4 +163,4 @@ Trích xuất JSON ngay lập tức.<|im_end|>
         print(f"❌ Lỗi hệ thống: {e}")
 
 if __name__ == "__main__":
-    run_universal_extraction("THÔNGTƯLIÊNTỊCH13.2025(bảncuối).docx", "result_universal.json")
+    run_universal_extraction("Tên file để cùng thư mục.docx", "output.json")
